@@ -21,6 +21,11 @@ namespace SBM.API.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            _logger.LogInformation("Esto es información");
+            _logger.LogWarning("Esto es una advertencia");
+            _logger.LogError("Esto es un error");
+            _logger.LogCritical("Esto es crítico");
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
