@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36109.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBM.API", "SBM.API\SBM.API.csproj", "{99AC39DE-EEC6-452F-92D9-CEBC6577A06A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBM.WEB", "SBM.WEB\SBM.WEB.csproj", "{173D4DD3-8426-4FDD-9BF6-87CC8476B062}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99AC39DE-EEC6-452F-92D9-CEBC6577A06A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99AC39DE-EEC6-452F-92D9-CEBC6577A06A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99AC39DE-EEC6-452F-92D9-CEBC6577A06A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99AC39DE-EEC6-452F-92D9-CEBC6577A06A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{173D4DD3-8426-4FDD-9BF6-87CC8476B062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{173D4DD3-8426-4FDD-9BF6-87CC8476B062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{173D4DD3-8426-4FDD-9BF6-87CC8476B062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{173D4DD3-8426-4FDD-9BF6-87CC8476B062}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34DA03B7-762E-498D-9845-F5B7DCB7E01B}
+	EndGlobalSection
+EndGlobal
