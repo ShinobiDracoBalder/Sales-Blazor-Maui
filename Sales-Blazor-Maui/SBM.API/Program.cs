@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using SBM.API.Data;
 using Serilog;
 using System.Text.Json.Serialization;
 
@@ -56,7 +58,7 @@ builder.Services.AddSwaggerGen(c =>
           }
         });
 });
-//builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DockerConnection"));
+builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DockerConnection"));
 
 var app = builder.Build();
 
