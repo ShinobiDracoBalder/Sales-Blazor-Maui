@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBM.API", "SBM.API\SBM.API.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBM.WEB", "SBM.WEB\SBM.WEB.csproj", "{173D4DD3-8426-4FDD-9BF6-87CC8476B062}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBM.Shared", "SBM.Shared\SBM.Shared.csproj", "{2910100A-4B7C-4130-A90A-461785723666}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBM.Mobile", "SBM.Mobile\SBM.Mobile.csproj", "{40D6EDF9-ABAC-4C19-847C-143F78DFC9B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,16 @@ Global
 		{173D4DD3-8426-4FDD-9BF6-87CC8476B062}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{173D4DD3-8426-4FDD-9BF6-87CC8476B062}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{173D4DD3-8426-4FDD-9BF6-87CC8476B062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2910100A-4B7C-4130-A90A-461785723666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2910100A-4B7C-4130-A90A-461785723666}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2910100A-4B7C-4130-A90A-461785723666}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2910100A-4B7C-4130-A90A-461785723666}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40D6EDF9-ABAC-4C19-847C-143F78DFC9B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40D6EDF9-ABAC-4C19-847C-143F78DFC9B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40D6EDF9-ABAC-4C19-847C-143F78DFC9B0}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{40D6EDF9-ABAC-4C19-847C-143F78DFC9B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40D6EDF9-ABAC-4C19-847C-143F78DFC9B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40D6EDF9-ABAC-4C19-847C-143F78DFC9B0}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
