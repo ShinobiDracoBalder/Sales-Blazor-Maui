@@ -1,0 +1,1 @@
+﻿select * from dbo.Countries order by 1 asc

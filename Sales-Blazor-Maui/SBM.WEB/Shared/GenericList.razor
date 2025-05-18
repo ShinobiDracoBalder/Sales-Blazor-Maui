@@ -1,0 +1,51 @@
+﻿@typeparam Titem
+
+@if (MyList is null)
+{
+    @if (Loading is null)
+    {
+        <div class="spinner" />
+    }
+    else
+    {
+        @Loading
+        <div class="align-items-center">
+            < img src="https://cssbud.com/wp-content/uploads/2022/05/loading.gif"/>
+        </div>
+    }
+
+}
+else if (MyList.Count == 0 || MyList == null)
+{
+    @if (NoRecords is null)
+    {
+        <div class="align-items-center">
+            <p>No hay registros para mostrar.</p>
+        </div>
+    }
+    else
+    {
+        @NoRecords
+    }
+}
+else
+{
+    @Body
+}
+
+
+@code {
+    [Parameter]
+    public RenderFragment? Loading { get; set; }
+
+    [Parameter]
+    public RenderFragment? NoRecords { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Body { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public List<Titem> MyList { get; set; } = null!;
+}
