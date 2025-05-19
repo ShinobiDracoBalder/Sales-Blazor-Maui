@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Fantasy.Backend.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using SBM.API.Data;
+using SBM.API.Services;
 using Serilog;
 using System.Text.Json.Serialization;
 
@@ -59,9 +61,21 @@ builder.Services.AddSwaggerGen(c =>
         });
 });
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DockerConnection"));
-
+builder.Services.AddTransient<SeedDb>();
+builder.Services.AddScoped<IApiService, ApiService>();
 var app = builder.Build();
+SeedData(app);
 
+void SeedData(WebApplication app)
+{
+    IServiceScopeFactory? scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (IServiceScope? scope = scopedFactory!.CreateScope())
+    {
+        SeedDb? service = scope.ServiceProvider.GetService<SeedDb>();
+        service!.SeedAsync().Wait();
+    }
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {

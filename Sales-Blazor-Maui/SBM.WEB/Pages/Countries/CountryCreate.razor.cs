@@ -1,7 +1,6 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
 using SBM.Shared.Entities;
-using SBM.Shared.Responses;
 using SBM.WEB.Repositories;
 
 

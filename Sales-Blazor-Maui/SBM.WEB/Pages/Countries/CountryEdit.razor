@@ -1,0 +1,14 @@
+﻿@page "/countries/edit/{Id:int}"
+@inject SweetAlertService sweetAlertService
+
+
+<h3>Editar País</h3>
+
+@if (country is null)
+{
+    <div class="spinner" />
+}
+else
+{
+    <CountryForm @ref="countryForm" Country="country" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}

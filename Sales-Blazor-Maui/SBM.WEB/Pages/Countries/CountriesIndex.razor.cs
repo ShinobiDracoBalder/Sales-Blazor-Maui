@@ -1,6 +1,9 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using SBM.Shared.Entities;
+using SBM.WEB.Repositories;
+using System.Net;
 
 namespace SBM.WEB.Pages.Countries
 {
@@ -16,6 +19,19 @@ namespace SBM.WEB.Pages.Countries
         [Parameter]
         [SupplyParameterFromQuery]
         public string Filter { get; set; } = string.Empty;
+
+        private readonly int[] pageSizeOptions = { 10, 25, 50, int.MaxValue };
+        private int totalRecords = 0;
+        private bool loading;
+        private const string baseUrl = "api/countries";
+
+        private string infoFormat = "{first_item}-{last_item} => {all_items}";
+
+        //[Inject] private IStringLocalizer<Literals> Localizer { get; set; } = null!;
+        [Inject] private IRepository Repository { get; set; } = null!;
+        [Inject] private IDialogService DialogService { get; set; } = null!;
+        [Inject] private ISnackbar Snackbar { get; set; } = null!;
+        [Inject] private NavigationManager NavigationManager { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
@@ -57,13 +73,46 @@ namespace SBM.WEB.Pages.Countries
             {
                 var responseHppt = await repository.Get<List<Country>>(url1);
                 var responseHppt2 = await repository.Get<int>(url2);
-                Countries = responseHppt.Response.Result!;
+                Countries = responseHppt.Response?.Result;
                 //totalPages = responseHppt2.Response!;
             }
             catch (Exception ex)
             {
                 await sweetAlertService.FireAsync("Error", ex.Message, SweetAlertIcon.Error);
             }
+        }
+
+        private async Task DeleteAsync(Country country)
+        {
+            //var parameters = new DialogParameters
+            //{
+            //    { "Message", string.Format(Localizer["DeleteConfirm"], Localizer["Country"], country.Name) }
+            //};
+            //var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall, CloseOnEscapeKey = true };
+            //var dialog = DialogService.Show<ConfirmDialog>(Localizer["Confirmation"], parameters, options);
+            //var result = await dialog.Result;
+            //if (result!.Canceled)
+            //{
+            //    return;
+            //}
+
+            var responseHttp = await Repository.Delete($"{baseUrl}/{country.Id}");
+            if (responseHttp.Error)
+            {
+                if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    NavigationManager.NavigateTo("/countries");
+                }
+                else
+                {
+                    var message = await responseHttp.GetErrorMessageAsync();
+                    //Snackbar.Add(Localizer[message!], Severity.Error);
+                }
+                return;
+            }
+            //await LoadTotalRecordsAsync();
+            //await table.ReloadServerData();
+            //Snackbar.Add(Localizer["RecordDeletedOk"], Severity.Success);
         }
     }
 }
