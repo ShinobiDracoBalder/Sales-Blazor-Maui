@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using SBM.Shared.Entities;
 using SBM.WEB.Repositories;
+using System.Diagnostics.Metrics;
 using System.Net;
 
 namespace SBM.WEB.Pages.Countries
@@ -11,7 +12,9 @@ namespace SBM.WEB.Pages.Countries
     {
         private int currentPage = 1;
         private int totalPages;
+
         public List<Country>? Countries { get; set; }
+
         [Parameter]
         [SupplyParameterFromQuery]
         public string Page { get; set; } = string.Empty;
@@ -20,32 +23,9 @@ namespace SBM.WEB.Pages.Countries
         [SupplyParameterFromQuery]
         public string Filter { get; set; } = string.Empty;
 
-        private readonly int[] pageSizeOptions = { 10, 25, 50, int.MaxValue };
-        private int totalRecords = 0;
-        private bool loading;
-        private const string baseUrl = "api/countries";
-
-        private string infoFormat = "{first_item}-{last_item} => {all_items}";
-
-        //[Inject] private IStringLocalizer<Literals> Localizer { get; set; } = null!;
-        [Inject] private IRepository Repository { get; set; } = null!;
-        [Inject] private IDialogService DialogService { get; set; } = null!;
-        [Inject] private ISnackbar Snackbar { get; set; } = null!;
-        [Inject] private NavigationManager NavigationManager { get; set; } = null!;
-
         protected override async Task OnInitializedAsync()
         {
-            var responseHttp = await repository.Get<List<Country>>("/api/countries/full");
-
-            if (!responseHttp.Error && responseHttp.Response?.IsSuccess == true)
-            {
-                Countries = responseHttp.Response.Result;
-            }
-            else
-            {
-                var errorMessage = await responseHttp.GetErrorMessageAsync();
-                // mostrar en UI
-            }
+            await LoadAsync();
         }
 
         private async Task LoadAsync(int page = 1)
@@ -72,9 +52,10 @@ namespace SBM.WEB.Pages.Countries
             try
             {
                 var responseHppt = await repository.Get<List<Country>>(url1);
+                var responseHttp = await repository.Get<List<Country>>("/api/countries/full");
                 var responseHppt2 = await repository.Get<int>(url2);
-                Countries = responseHppt.Response?.Result;
-                //totalPages = responseHppt2.Response!;
+                Countries = responseHttp.Response?.Result!;
+                //totalPages = responseHppt2.Response?.Result!;
             }
             catch (Exception ex)
             {
@@ -82,37 +63,55 @@ namespace SBM.WEB.Pages.Countries
             }
         }
 
+        private async Task SelectedPageAsync(int page)
+        {
+            currentPage = page;
+            await LoadAsync(page);
+        }
+
         private async Task DeleteAsync(Country country)
         {
-            //var parameters = new DialogParameters
-            //{
-            //    { "Message", string.Format(Localizer["DeleteConfirm"], Localizer["Country"], country.Name) }
-            //};
-            //var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall, CloseOnEscapeKey = true };
-            //var dialog = DialogService.Show<ConfirmDialog>(Localizer["Confirmation"], parameters, options);
-            //var result = await dialog.Result;
-            //if (result!.Canceled)
-            //{
-            //    return;
-            //}
-
-            var responseHttp = await Repository.Delete($"{baseUrl}/{country.Id}");
-            if (responseHttp.Error)
+            var result = await sweetAlertService.FireAsync(new SweetAlertOptions
             {
-                if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
-                {
-                    NavigationManager.NavigateTo("/countries");
-                }
-                else
-                {
-                    var message = await responseHttp.GetErrorMessageAsync();
-                    //Snackbar.Add(Localizer[message!], Severity.Error);
-                }
+                Title = "Confirmación",
+                Text = "¿Realmente deseas eliminar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true,
+                CancelButtonText = "No",
+                ConfirmButtonText = "Si"
+            });
+
+            var confirm = string.IsNullOrEmpty(result.Value);
+            if (confirm)
+            {
                 return;
             }
-            //await LoadTotalRecordsAsync();
-            //await table.ReloadServerData();
-            //Snackbar.Add(Localizer["RecordDeletedOk"], Severity.Success);
+
+            var responseHttp = await repository.Delete($"/api/countries/{country.Id}");
+            if (responseHttp.Error)
+            {
+                if (responseHttp.HttpResponseMessage.StatusCode != HttpStatusCode.NotFound)
+                {
+                    var message = await responseHttp.GetErrorMessageAsync();
+                    await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                    return;
+                }
+            }
+
+            await LoadAsync();
+        }
+
+        private async Task CleanFilterAsync()
+        {
+            Filter = string.Empty;
+            await ApplyFilterAsync();
+        }
+
+        private async Task ApplyFilterAsync()
+        {
+            int page = 1;
+            await LoadAsync(page);
+            await SelectedPageAsync(page);
         }
     }
 }

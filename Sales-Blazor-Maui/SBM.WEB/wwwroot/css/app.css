@@ -101,3 +101,19 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+
+<!-- wwwroot/css/site.css o dentro de la Layout -->
+.sidebar {
+    background: linear-gradient(180deg, #1f1c2c, #928dab); /* más profesional */
+    color: white;
+}
+
+.sidebar a.nav-link {
+    color: white;
+}
+
+    .sidebar a.nav-link.active {
+        font-weight: bold;
+        color: #00d1b2;
+    }

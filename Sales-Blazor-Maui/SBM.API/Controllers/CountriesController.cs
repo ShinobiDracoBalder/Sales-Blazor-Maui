@@ -66,8 +66,8 @@ namespace SBM.API.Controllers
             List<Country> countries = new List<Country>();    
             _logger.LogInformation("Inicio del método GetFullAsync.");
             countries = await _dataContext.Countries
-                //.Include(x => x.States!)
-                //.ThenInclude(x => x.Cities)
+                .Include(x => x.States!)
+                .ThenInclude(x => x.Cities)
                 .ToListAsync();
             if (countries.Count == 0)
             {

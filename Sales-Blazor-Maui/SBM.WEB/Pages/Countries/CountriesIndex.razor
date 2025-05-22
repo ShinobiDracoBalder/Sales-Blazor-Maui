@@ -34,33 +34,48 @@ else
 
             <GenericList MyList="Countries">
                 <Body>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>País</th>
-                                <th style="width:220px">Estados / Departamentos</th>
-                                <th style="width:260px"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var country in Countries!)
-                            {
-                                <tr>
-                                    <td>
-                                        @country.Name
-                                    </td>
-                                   @*  <td>
-                                        @country.StatesNumber
-                                    </td> *@
-                                    <td>
-                                        <a href="/countries/details/@country.Id" class="btn btn-outline-info btn-sm"><i class="oi oi-list" /> Detalles</a>
-                                        <a href="/countries/edit/@country.Id" class="btn btn-outline-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
-                                        <button class="btn btn-outline-danger btn-sm" @onclick=@(() => DeleteAsync(country))><i class="oi oi-trash" /> Borrar</button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                    <!-- Contenedor principal con padding -->
+                    <div class="container py-4">
+                        <!-- Fila centrada -->
+                        <div class="d-flex justify-content-center mt-4">
+                            <!-- Columna con ancho automático para que se ajuste a la tabla -->
+                            <div class="col-auto">
+                                <table class="table table-bordered w-auto">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="text-center">País</th>
+                                            <th class="text-center">Iso2</th>
+                                            <th class="text-center">PhoneCode</th>
+                                            <th class="text-center" style="width:220px">Estados / Departamentos</th>
+                                            <th class="text-center" style="width:260px">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var country in Countries!)
+                                        {
+                                            <tr>
+                                                <td>@country.Name</td>
+                                                <td>@country.Iso2</td>
+                                                <td>@country.PhoneCode</td>
+                                                <td>@country.StatesNumber</td>
+                                                <td class="text-center">
+                                                    <a href="/countries/details/@country.Id" class="btn btn-outline-info btn-sm me-1">
+                                                        <i class="oi oi-list"></i> Detalles
+                                                    </a>
+                                                    <a href="/countries/edit/@country.Id" class="btn btn-outline-warning btn-sm me-1">
+                                                        <i class="oi oi-pencil"></i> Editar
+                                                    </a>
+                                                    <button class="btn btn-outline-danger btn-sm" @onclick="@(() => DeleteAsync(country))">
+                                                        <i class="oi oi-trash"></i> Borrar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </Body>
             </GenericList>
         </div>

@@ -4,13 +4,36 @@
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
-    <div class="mb-3">
-        <label>País:</label>
-        <div>
-            <InputText class="form-control" @bind-Value="@Country.Name" />
-            <ValidationMessage For="@(() => Country.Name)" />
+    <ValidationSummary class="text-danger" />
+    <div class="card shadow rounded p-4">
+        <h4 class="mb-3">Información del País</h4>
+
+        <div class="mb-3">
+            <label>País:</label>
+            <div>
+                <InputText class="form-control" @bind-Value="@Country.Name" />
+                <ValidationMessage For="@(() => Country.Name)" />
+            </div>
         </div>
+
+        <div class="mb-3">
+            <label>Iso2:</label>
+            <div>
+                <InputText class="form-control" @bind-Value="@Country.Iso2" />
+                <ValidationMessage For="@(() => Country.Iso2)" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label>Phone - Code:</label>
+            <div>
+                <InputText class="form-control" @bind-Value="@Country.PhoneCode" />
+                <ValidationMessage For="@(() => Country.PhoneCode)" />
+            </div>
+        </div>
+
+        <button class="btn btn-outline-primary" type="submit">Guardar Cambios</button>
+        <button class="btn btn-outline-success" @onclick="ReturnAction">Regresar</button>
+    
     </div>
-    <button class="btn btn-outline-primary" type="submit">Guardar Cambios</button>
-    <button class="btn btn-outline-success" @onclick="ReturnAction">Regresar</button>
 </EditForm>
