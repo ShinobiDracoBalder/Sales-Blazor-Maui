@@ -1,7 +1,10 @@
 ﻿using Fantasy.Backend.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SBM.API.Data;
+using SBM.API.Infrastructure.Implementations;
+using SBM.API.Infrastructure.Interfaces;
 using SBM.API.Services;
 using Serilog;
 using System.Text.Json.Serialization;
@@ -19,6 +22,14 @@ Log.Logger = new LoggerConfiguration()
         retainedFileCountLimit: 7              // ✅ Opcional: mantiene los últimos 7 días
     )
     .CreateLogger();
+
+// Registrar HttpClient para la API destino
+builder.Services.AddHttpClient("ApiDestino", client =>
+{
+    //client.BaseAddress = new Uri($"{builder.Configuration["CoutriesAPI:urlBase"]}/v1/countries"!);
+    client.BaseAddress = new Uri($"{builder.Configuration["CoutriesAPI:urlBase"]}"!);
+    client.Timeout = TimeSpan.FromSeconds(5); // Tiempo de espera máximo
+});
 
 // Usa Serilog como sistema de logging
 builder.Host.UseSerilog();
@@ -63,6 +74,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=DockerConnection"));
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddScoped<IApiService, ApiService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IApiVerificationService, ApiVerificationService>();
+builder.Services.AddScoped<IStateRepository, StateRepository>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
 var app = builder.Build();
 SeedData(app);
 
@@ -77,7 +92,8 @@ void SeedData(WebApplication app)
     }
 }
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+//if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

@@ -19,7 +19,7 @@ namespace SBM.Shared.Entities
 
         [Display(Name = "PhoneCode")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [MaxLength(15, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
+        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
         public string? PhoneCode { get; set; } = null!;
 
         public ICollection<State>? States { get; set; }

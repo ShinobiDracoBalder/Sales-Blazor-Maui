@@ -21,5 +21,6 @@
         /// Resultado genérico de la operación.
         /// </summary>
         public T? Result { get; set; }
+        public int? TotalPages { get; set; } // 👈 nuevo campo
     }
 }

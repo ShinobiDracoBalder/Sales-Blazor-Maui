@@ -1,0 +1,15 @@
+﻿@page "/categories/edit/{CategoryId:int}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Editar categoría</h3>
+
+@if (category is null)
+{
+    <div class="spinner" />
+}
+else
+{
+    <CategoryForm @ref="categoryForm" Category="category" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SBM.API.Data;
 using SBM.Shared.Entities;
 using SBM.Shared.Responses;
+using Serilog;
 using System.Net;
 
 namespace SBM.API.Controllers
@@ -58,6 +59,52 @@ namespace SBM.API.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);
             }
         }
+
+        [HttpGet]
+        public async Task<ActionResult> Get()
+        {
+            Response<List<Country>> response = new Response<List<Country>>();
+            List<Country> countries = new List<Country>();
+            _logger.LogInformation("Inicio del método Get -- Async.");
+            try
+            {
+                countries = await _dataContext.Countries
+                .Include(x => x.States)
+                .ToListAsync();
+
+                if (countries.Count == 0)
+                {
+                    response = new Response<List<Country>>
+                    {
+                        IsSuccess = true,
+                        StatusCode = (int)HttpStatusCode.NotFound,
+                        Message = "Lista sin datos",
+                        Result = countries
+                    };
+                    return Ok(response);
+                }
+                response = new Response<List<Country>>
+                {
+                    IsSuccess = true,
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Message = "Lista completa de países",
+                    Result = countries
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogInformation($"Error Inicio del método Exception {ex.Message}");
+                return Ok(new Response<Country>
+                {
+                    IsSuccess = false,
+                    StatusCode = (int)HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                });
+            }
+        }
+
 
         [HttpGet("full")]
         public async Task<ActionResult<Response<List<Country>>>> GetFullAsync()

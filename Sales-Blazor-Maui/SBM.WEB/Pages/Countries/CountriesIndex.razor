@@ -40,7 +40,7 @@ else
                         <div class="d-flex justify-content-center mt-4">
                             <!-- Columna con ancho automático para que se ajuste a la tabla -->
                             <div class="col-auto">
-                                <table class="table table-bordered w-auto">
+                                <table class="table table-striped">
                                     <thead class="table-light">
                                         <tr>
                                             <th class="text-center">País</th>
@@ -53,7 +53,7 @@ else
                                     <tbody>
                                         @foreach (var country in Countries!)
                                         {
-                                            <tr>
+                                            <trclass class="d-flex justify-content-center mt-4">
                                                 <td>@country.Name</td>
                                                 <td>@country.Iso2</td>
                                                 <td>@country.PhoneCode</td>
@@ -69,7 +69,7 @@ else
                                                         <i class="oi oi-trash"></i> Borrar
                                                     </button>
                                                 </td>
-                                            </tr>
+                                            </trclass>
                                         }
                                     </tbody>
                                 </table>

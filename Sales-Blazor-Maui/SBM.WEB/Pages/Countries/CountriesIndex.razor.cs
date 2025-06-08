@@ -1,9 +1,6 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using SBM.Shared.Entities;
-using SBM.WEB.Repositories;
-using System.Diagnostics.Metrics;
 using System.Net;
 
 namespace SBM.WEB.Pages.Countries

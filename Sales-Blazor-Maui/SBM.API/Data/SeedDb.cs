@@ -10,17 +10,20 @@ public class SeedDb
 {
     private readonly DataContext _context;
     private readonly IApiService _apiService;
+    private readonly IApiVerificationService _apiVerificationService;
 
-    public SeedDb(DataContext context, IApiService apiService)
+    public SeedDb(DataContext context, IApiService apiService, IApiVerificationService apiVerificationService)
     {
         _context = context;
         _apiService = apiService;
+        _apiVerificationService = apiVerificationService;
     }
 
     public async Task SeedAsync()
     {
         await _context.Database.EnsureCreatedAsync();
         await CheckCountriesAsync();
+        await CheckCategoriesAsync();
         //await CheckTeamsAsync();
         //await CheckRolesAsync();
         //await CheckUserAsync("Juan", "Zuluaga", "zulu@yopmail.com", "322 311 4620", UserType.Admin);
@@ -67,58 +70,86 @@ public class SeedDb
     //        await _context.Database.ExecuteSqlRawAsync(countriesSQLScript);
     //    }
     //}
+    private async Task CheckCategoriesAsync()
+    {
+        if (!_context.Categories.Any())
+        {
+            _context.Categories.Add(new Category { Name = "Apple" });
+            _context.Categories.Add(new Category { Name = "Autos" });
+            _context.Categories.Add(new Category { Name = "Belleza" });
+            _context.Categories.Add(new Category { Name = "Calzado" });
+            _context.Categories.Add(new Category { Name = "Comida" });
+            _context.Categories.Add(new Category { Name = "Cosmeticos" });
+            _context.Categories.Add(new Category { Name = "Deportes" });
+            _context.Categories.Add(new Category { Name = "Erótica" });
+            _context.Categories.Add(new Category { Name = "Ferreteria" });
+            _context.Categories.Add(new Category { Name = "Gamer" });
+            _context.Categories.Add(new Category { Name = "Hogar" });
+            _context.Categories.Add(new Category { Name = "Jardín" });
+            _context.Categories.Add(new Category { Name = "Jugetes" });
+            _context.Categories.Add(new Category { Name = "Lenceria" });
+            _context.Categories.Add(new Category { Name = "Mascotas" });
+            _context.Categories.Add(new Category { Name = "Nutrición" });
+            _context.Categories.Add(new Category { Name = "Ropa" });
+            _context.Categories.Add(new Category { Name = "Tecnología" });
+            await _context.SaveChangesAsync();
+        }
+    }
     private async Task CheckCountriesAsync()
     {
-        if (!_context.Countries.Any())
+        if (await _apiVerificationService.IsApiActiveAsync())
         {
-            GenericResponse responseCountries = await _apiService.GetListAsync<CountryResponse>("/v1", "/countries");
-            if (responseCountries.IsSuccess)
+            if (!_context.Countries.Any())
             {
-                List<CountryResponse> countries = (List<CountryResponse>)responseCountries.Result!;
-                foreach (CountryResponse countryResponse in countries)
+                GenericResponse responseCountries = await _apiService.GetListAsync<CountryResponse>("/v1", "/countries");
+                if (responseCountries.IsSuccess)
                 {
-                    Country? country = await _context.Countries!.FirstOrDefaultAsync(c => c.Name == countryResponse.Name!)!;
-                    if (country == null)
+                    List<CountryResponse> countries = (List<CountryResponse>)responseCountries.Result!;
+                    foreach (CountryResponse countryResponse in countries)
                     {
-                        country = new() { Name = countryResponse.Name!, Iso2 = countryResponse.Iso2!, PhoneCode = countryResponse.PhoneCode!, States = new List<State>() };
-                        GenericResponse responseStates = await _apiService.GetListAsync<StateResponse>("/v1", $"/countries/{countryResponse.Iso2}/states");
-                        if (responseStates.IsSuccess)
+                        Country? country = await _context.Countries!.FirstOrDefaultAsync(c => c.Name == countryResponse.Name!)!;
+                        if (country == null)
                         {
-                            List<StateResponse> states = (List<StateResponse>)responseStates.Result!;
-                            foreach (StateResponse stateResponse in states!)
+                            country = new() { Name = countryResponse.Name!, Iso2 = countryResponse.Iso2!, PhoneCode = countryResponse.PhoneCode!, States = new List<State>() };
+                            GenericResponse responseStates = await _apiService.GetListAsync<StateResponse>("/v1", $"/countries/{countryResponse.Iso2}/states");
+                            if (responseStates.IsSuccess)
                             {
-                                State state = country.States!.FirstOrDefault(s => s.Name == stateResponse.Name!)!;
-                                if (state == null)
+                                List<StateResponse> states = (List<StateResponse>)responseStates.Result!;
+                                foreach (StateResponse stateResponse in states!)
                                 {
-                                    state = new() { Name = stateResponse.Name!, Cities = new List<City>() };
-                                    GenericResponse responseCities = await _apiService.GetListAsync<CityResponse>("/v1", $"/countries/{countryResponse.Iso2}/states/{stateResponse.Iso2}/cities");
-                                    if (responseCities.IsSuccess)
+                                    State state = country.States!.FirstOrDefault(s => s.Name == stateResponse.Name!)!;
+                                    if (state == null)
                                     {
-                                        List<CityResponse> cities = (List<CityResponse>)responseCities.Result!;
-                                        foreach (CityResponse cityResponse in cities)
+                                        state = new() { Name = stateResponse.Name!, Cities = new List<City>() };
+                                        GenericResponse responseCities = await _apiService.GetListAsync<CityResponse>("/v1", $"/countries/{countryResponse.Iso2}/states/{stateResponse.Iso2}/cities");
+                                        if (responseCities.IsSuccess)
                                         {
-                                            if (cityResponse.Name == "Mosfellsbær" || cityResponse.Name == "Șăulița")
+                                            List<CityResponse> cities = (List<CityResponse>)responseCities.Result!;
+                                            foreach (CityResponse cityResponse in cities)
                                             {
-                                                continue;
-                                            }
-                                            City city = state.Cities!.FirstOrDefault(c => c.Name == cityResponse.Name!)!;
-                                            if (city == null)
-                                            {
-                                                state.Cities.Add(new City() { Name = cityResponse.Name! });
+                                                if (cityResponse.Name == "Mosfellsbær" || cityResponse.Name == "Șăulița")
+                                                {
+                                                    continue;
+                                                }
+                                                City city = state.Cities!.FirstOrDefault(c => c.Name == cityResponse.Name!)!;
+                                                if (city == null)
+                                                {
+                                                    state.Cities.Add(new City() { Name = cityResponse.Name! });
+                                                }
                                             }
                                         }
-                                    }
-                                    if (state.CitiesNumber > 0)
-                                    {
-                                        country.States.Add(state);
+                                        if (state.CitiesNumber > 0)
+                                        {
+                                            country.States.Add(state);
+                                        }
                                     }
                                 }
                             }
-                        }
-                        if (country.StatesNumber > 0)
-                        {
-                            _context.Countries.Add(country);
-                            await _context.SaveChangesAsync();
+                            if (country.StatesNumber > 0)
+                            {
+                                _context.Countries.Add(country);
+                                await _context.SaveChangesAsync();
+                            }
                         }
                     }
                 }
